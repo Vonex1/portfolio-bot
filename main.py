@@ -14,7 +14,7 @@ dp = Dispatcher()
 def get_main_keyboard():
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🛠 Что я умею (Навыки)", callback_data="skills")],
-        [InlineKeyboardButton(text="📁 Моё портфолио (GitHub)", url="https://github.com")],
+        [InlineKeyboardButton(text="📁 Моё портфолио (GitHub)", url="https://github.com/Vonex1")],
         [InlineKeyboardButton(text="💬 Написать мне в ЛС", url="https://t.me/qqslp")] 
     ])
     return keyboard
