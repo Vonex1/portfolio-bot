@@ -3,6 +3,7 @@ import os
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from dotenv import load_dotenv
+from aiohttp import web
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -14,7 +15,7 @@ def get_main_keyboard():
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🛠 Что я умею (Навыки)", callback_data="skills")],
         [InlineKeyboardButton(text="📁 Моё портфолио (GitHub)", url="https://github.com")],
-        [InlineKeyboardButton(text="💬 Написать мне в ЛС", url="https://t.me/qqslp")]
+        [InlineKeyboardButton(text="💬 Написать мне в ЛС", url="https://t.me/qqslp")] 
     ])
     return keyboard
 
@@ -35,15 +36,28 @@ async def show_skills(callback: asyncio.Task):
     skills_text = (
         "🛠 Мой технологический стек:\n\n"
         "• Язык: Python 🐍\n"
-        "• Библиотека: Aiogram 3.x (самая современная и быстрая)\n"
-        "• Базы данных: SQLite / PostgreSQL (для хранения данных пользователей)\n"
+        "• Библиотека: Aiogram 3.x\n"
+        "• Базы данных: SQLite / PostgreSQL\n"
         "• Инструменты: Git, GitHub, VS Code\n\n"
-        "Готов разработать бота любой сложности: от простых визиток до магазинов и сложных систем автоматизации!"
+        "Готов разработать бота любой сложности!"
     )
     
     await callback.message.answer(text=skills_text, reply_markup=get_main_keyboard())
 
+async def handle(request):
+    return web.Response(text="Бот работает!")
+
+async def web_server():
+    app = web.Application()
+    app.router.add_get('/', handle)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    port = int(os.environ.get("PORT", 8080))
+    site = web.TCPSite(runner, '0.0.0.0', port)
+    await site.start()
+
 async def main():
+    asyncio.create_task(web_server())
     print("Бот успешно запущен и готов к работе!")
     await dp.start_polling(bot)
 
